@@ -1157,6 +1157,7 @@ func (config DeleteMessageConfig) values() (url.Values, error) {
 
 // PinChatMessageConfig contains information of a message in a chat to pin.
 type PinChatMessageConfig struct {
+	ChannelUsername     string
 	ChatID              int64
 	MessageID           int
 	DisableNotification bool
@@ -1169,7 +1170,12 @@ func (config PinChatMessageConfig) method() string {
 func (config PinChatMessageConfig) values() (url.Values, error) {
 	v := url.Values{}
 
-	v.Add("chat_id", strconv.FormatInt(config.ChatID, 10))
+	if config.ChannelUsername != "" {
+		v.Add("chat_id", config.ChannelUsername)
+	} else {
+		v.Add("chat_id", strconv.FormatInt(config.ChatID, 10))
+	}
+
 	v.Add("message_id", strconv.Itoa(config.MessageID))
 	v.Add("disable_notification", strconv.FormatBool(config.DisableNotification))
 
@@ -1178,7 +1184,8 @@ func (config PinChatMessageConfig) values() (url.Values, error) {
 
 // UnpinChatMessageConfig contains information of chat to unpin.
 type UnpinChatMessageConfig struct {
-	ChatID int64
+	ChannelUsername string
+	ChatID          int64
 }
 
 func (config UnpinChatMessageConfig) method() string {
@@ -1188,8 +1195,11 @@ func (config UnpinChatMessageConfig) method() string {
 func (config UnpinChatMessageConfig) values() (url.Values, error) {
 	v := url.Values{}
 
-	v.Add("chat_id", strconv.FormatInt(config.ChatID, 10))
-
+	if config.ChannelUsername != "" {
+		v.Add("chat_id", config.ChannelUsername)
+	} else {
+		v.Add("chat_id", strconv.FormatInt(config.ChatID, 10))
+	}
 	return v, nil
 }
 
